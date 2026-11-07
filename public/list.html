@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Available Jobs</h1></header>
+<nav><a href="index.html">Home</a></nav>
+
+<div class="container">
+    <button onclick="loadJobs()">Refresh Jobs</button>
+    <div id="jobList"></div>
+</div>
+
+<script>
+async function loadJobs() {
+    const response = await fetch("/list");
+    const jobs = await response.json();
+
+    let html = `<table>
+    <tr>
+    <th>ID</th><th>Job Title</th><th>Company</th>
+    <th>Location</th><th>Salary</th><th>Skills</th>
+    <th>Interview Date</th><th>Posts</th>
+    </tr>`;
+
+    jobs.forEach(job => {
+        html += `<tr>
+        <td>${job.job_id}</td>
+        <td>${job.title_of_job}</td>
+        <td>${job.company}</td>
+        <td>${job.location}</td>
+        <td>${job.salary}</td>
+        <td>${job.skills}</td>
+        <td>${job.date_of_interview || ""}</td>
+        <td>${job.number_of_posts}</td>
+        </tr>`;
+    });
+
+    html += "</table>";
+    document.getElementById("jobList").innerHTML = html;
+}
+loadJobs();
+</script>
+</body>
+</html>

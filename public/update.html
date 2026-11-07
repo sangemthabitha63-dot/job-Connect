@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Job</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Update Job Details</h1></header>
+<nav><a href="index.html">Home</a></nav>
+
+<div class="container">
+    <input type="number" id="jobId" placeholder="Enter Job ID">
+    <button onclick="getJob()">Get Job Details</button>
+
+    <form id="updateForm">
+        <input id="title" placeholder="Job Title" required>
+        <input id="company" placeholder="Company" required>
+        <input id="location" placeholder="Location" required>
+        <input id="salary" type="number" placeholder="Salary" required>
+        <input id="skills" placeholder="Skills" required>
+        <input id="date" type="date" required>
+        <input id="posts" type="number" placeholder="Number of Posts" required>
+        <button type="submit">Update Job</button>
+    </form>
+
+    <p id="message"></p>
+</div>
+
+<script>
+async function getJob() {
+    const id = document.getElementById("jobId").value;
+    if (!id) return alert("Enter Job ID");
+
+    const response = await fetch("/listone/" + id);
+    const jobs = await response.json();
+
+    if (!jobs.length) return alert("Job not found");
+
+    const job = jobs[0];
+    document.getElementById("title").value = job.title_of_job;
+    document.getElementById("company").value = job.company;
+    document.getElementById("location").value = job.location;
+    document.getElementById("salary").value = job.salary;
+    document.getElementById("skills").value = job.skills;
+    document.getElementById("date").value =
+        job.date_of_interview ? String(job.date_of_interview).slice(0,10) : "";
+    document.getElementById("posts").value = job.number_of_posts;
+}
+
+document.getElementById("updateForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("jobId").value;
+
+    const job = {
+        title_of_job: document.getElementById("title").value,
+        company: document.getElementById("company").value,
+        location: document.getElementById("location").value,
+        salary: document.getElementById("salary").value,
+        skills: document.getElementById("skills").value,
+        date_of_interview: document.getElementById("date").value,
+        number_of_posts: document.getElementById("posts").value
+    };
+
+    const response = await fetch("/update/" + id, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(job)
+    });
+
+    const result = await response.json();
+    document.getElementById("message").innerText =
+        result.message || "Update failed";
+});
+</script>
+</body>
+</html>

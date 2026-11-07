@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search One Job</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Search Job Details</h1></header>
+<nav><a href="index.html">Home</a></nav>
+
+<div class="container">
+    <input type="number" id="jobId" placeholder="Enter Job ID">
+    <button onclick="searchJob()">Search</button>
+    <div id="result"></div>
+</div>
+
+<script>
+async function searchJob() {
+    const id = document.getElementById("jobId").value;
+
+    if (!id) {
+        alert("Please enter Job ID");
+        return;
+    }
+
+    const response = await fetch("/listone/" + id);
+    const jobs = await response.json();
+
+    if (!jobs.length) {
+        document.getElementById("result").innerHTML = "Job not found";
+        return;
+    }
+
+    const job = jobs[0];
+
+    document.getElementById("result").innerHTML = `
+        <h2>${job.title_of_job}</h2>
+        <p>Job ID: ${job.job_id}</p>
+        <p>Company: ${job.company}</p>
+        <p>Location: ${job.location}</p>
+        <p>Salary: ${job.salary}</p>
+        <p>Skills: ${job.skills}</p>
+        <p>Interview Date: ${job.date_of_interview || ""}</p>
+        <p>Number of Posts: ${job.number_of_posts}</p>
+    `;
+}
+</script>
+</body>
+</html>

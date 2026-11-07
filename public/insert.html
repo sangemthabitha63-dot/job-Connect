@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert Job</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Insert New Job</h1></header>
+
+<nav><a href="index.html">Home</a></nav>
+
+<div class="container">
+    <form id="jobForm">
+        <input id="title_of_job" placeholder="Job Title" required>
+        <input id="company" placeholder="Company Name" required>
+        <input id="location" placeholder="Location" required>
+        <input id="salary" type="number" placeholder="Salary" required>
+        <input id="skills" placeholder="Skills" required>
+        <input id="date_of_interview" type="date" required>
+        <input id="number_of_posts" type="number" placeholder="Number of Posts" required>
+        <button type="submit">Insert Job</button>
+    </form>
+    <p id="message"></p>
+</div>
+
+<script>
+document.getElementById("jobForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const job = {
+        title_of_job: document.getElementById("title_of_job").value,
+        company: document.getElementById("company").value,
+        location: document.getElementById("location").value,
+        salary: document.getElementById("salary").value,
+        skills: document.getElementById("skills").value,
+        date_of_interview: document.getElementById("date_of_interview").value,
+        number_of_posts: document.getElementById("number_of_posts").value
+    };
+
+    const response = await fetch("/insert", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(job)
+    });
+
+    const result = await response.json();
+    document.getElementById("message").innerText =
+        result.message || "Error inserting job";
+    if (response.ok) this.reset();
+});
+</script>
+</body>
+</html>
